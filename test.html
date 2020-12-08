@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="entry" style="width: 100px;height: 100px;background-color: hotpink;"></div>
+    <script src="./dist/index.js"></script>
+    <script>
+        console.log('QuantumWordCount', QuantumWordCount);
+        var str = '<p style="width:100px;">this is a good test.</p><p>I have an apple, you have an apple, we all have an apple.</p><p><br></p><p>haha<i>ha</i></p>'
+        var count = QuantumWordCount.getWordCount(str);
+        var filter = QuantumWordCount.filterTag(str);
+        console.log('number', count);
+        console.log('str', filter);
+    </script>
+</body>
+</html>
