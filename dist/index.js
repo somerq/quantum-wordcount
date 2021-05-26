@@ -24314,10 +24314,10 @@
 	    }
 	    ThaiWordCount.prototype.readDictionry = function (words) {
 	        if (!Array.isArray(words)) {
-	            words = words.split("\n");
+	            words = words.split('\n');
 	        }
-	        for (var i in words) {
-	            var word = words[i];
+	        for (var _i = 0, words_1 = words; _i < words_1.length; _i++) {
+	            var word = words_1[_i];
 	            if (word.length > 0) {
 	                if (word.search(/,/) >= 0) {
 	                    var compoundWord = word.split(':');
@@ -24331,8 +24331,8 @@
 	    };
 	    ThaiWordCount.prototype.generateWordTree = function (word) {
 	        var path = this.wordTree;
-	        for (var i in word) {
-	            var c = word[i];
+	        for (var _i = 0, word_1 = word; _i < word_1.length; _i++) {
+	            var c = word_1[_i];
 	            if (!path[c]) {
 	                path[c] = {};
 	            }
@@ -24342,8 +24342,8 @@
 	    ThaiWordCount.prototype.queryWordTree = function (word) {
 	        var isFound = true;
 	        var path = this.wordTree;
-	        for (var i in word) {
-	            var c = word[i];
+	        for (var _i = 0, word_2 = word; _i < word_2.length; _i++) {
+	            var c = word_2[_i];
 	            if (!path[c]) {
 	                isFound = false;
 	                break;
@@ -24352,52 +24352,58 @@
 	        }
 	        return isFound;
 	    };
-	    ThaiWordCount.prototype.tokenize = function (string) {
-	        string = this.filterSymbols(string);
-	        string = this.convertLowerCase(string);
-	        var workingArray = string.split(" ");
+	    ThaiWordCount.prototype.tokenize = function (content) {
+	        content = this.filterSymbols(content);
+	        content = this.convertLowerCase(content);
+	        console.log('handled content 3', content);
+	        var workingArray = content.split(' ');
+	        console.log('workingArray', workingArray);
 	        var resultArray = [];
-	        for (var i in workingArray) {
-	            var string = workingArray[i];
-	            if (string.search(/[ก-๙]/) >= 0) {
-	                var thaiTokens = this.breakThaiWords(string);
+	        for (var _i = 0, workingArray_1 = workingArray; _i < workingArray_1.length; _i++) {
+	            var str = workingArray_1[_i];
+	            if (str.search(/[ก-๙]/) >= 0) {
+	                var thaiTokens = this.breakThaiWords(str);
 	                for (var j in thaiTokens) {
-	                    string = thaiTokens[j];
-	                    if (string.length > 0) {
-	                        resultArray.push(string);
+	                    if (thaiTokens.hasOwnProperty(j)) {
+	                        str = thaiTokens[j];
+	                        if (str.length > 0) {
+	                            resultArray.push(str);
+	                        }
 	                    }
 	                }
 	            }
 	            else {
-	                if (string.length > 0) {
-	                    resultArray.push(string);
+	                if (str.length > 0) {
+	                    resultArray.push(str);
 	                }
 	            }
 	        }
 	        return resultArray;
 	    };
-	    ThaiWordCount.prototype.filterSymbols = function (data) {
-	        data = data.replace(/(\n)/g, '');
-	        data = data.replace(/[^a-z 0-9 ก-๙]/gi, ' ');
-	        return data;
+	    ThaiWordCount.prototype.filterSymbols = function (content) {
+	        content = content.replace(/(\n)/g, '').replace(/[^a-z0-9ก-๙]/gi, ' ');
+	        console.log('handled content 1', content);
+	        return content;
 	    };
-	    ThaiWordCount.prototype.convertLowerCase = function (string) {
-	        return string.toLowerCase();
+	    ThaiWordCount.prototype.convertLowerCase = function (content) {
+	        content = content.toLowerCase();
+	        console.log('handled content 2', content);
+	        return content;
 	    };
-	    ThaiWordCount.prototype.breakThaiWords = function (string) {
+	    ThaiWordCount.prototype.breakThaiWords = function (word) {
 	        var words = [];
 	        var index = 0;
 	        var currentWord = '';
 	        var spareWord = '';
 	        var badWord = '';
 	        var nextWordAble = false;
-	        for (var i in string) {
-	            var c = string[i];
+	        for (var i = 0; i < word.length; i++) {
+	            var c = word[i];
 	            var checkWord = currentWord + c;
 	            if (this.queryWordTree(checkWord)) {
 	                currentWord = checkWord;
 	                if (this.thaiWords[currentWord]) {
-	                    if (badWord != '') {
+	                    if (badWord !== '') {
 	                        words[index] = badWord.substring(0, badWord.length - 1);
 	                        badWord = '';
 	                        index++;
@@ -24405,7 +24411,9 @@
 	                    if (this.compoundWords[checkWord]) {
 	                        var brokenWords = this.compoundWords[checkWord];
 	                        for (var j in brokenWords) {
-	                            words[index++] = brokenWords[j];
+	                            if (brokenWords.hasOwnProperty(j)) {
+	                                words[index++] = brokenWords[j];
+	                            }
 	                        }
 	                        index--;
 	                    }
@@ -24427,7 +24435,7 @@
 	                    index++;
 	                }
 	                else {
-	                    if (badWord == '') {
+	                    if (badWord === '') {
 	                        badWord = currentWord + c;
 	                    }
 	                    else {
@@ -24437,7 +24445,7 @@
 	                }
 	            }
 	        }
-	        if (badWord != '') {
+	        if (badWord !== '') {
 	            words[index] = badWord;
 	        }
 	        return words;
@@ -24506,7 +24514,10 @@
 	            content = this.filterTag(content);
 	        }
 	        if (isLangOf(content, thaiUnicode, thaiContentRatio)) {
-	            return TWC.tokenize(content).length;
+	            console.log('origin content', content);
+	            var tokenized = TWC.tokenize(content);
+	            console.log('tokenized array', tokenized);
+	            return tokenized.length;
 	        }
 	        var wordBuffer = new dist();
 	        var clearBuffer = false;

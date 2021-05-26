@@ -15,9 +15,9 @@ declare class ThaiWordCount {
     readDictionry(words: Array<string> | string): void;
     generateWordTree(word: any): void;
     queryWordTree(word: any): boolean;
-    tokenize(string: string): string[];
-    filterSymbols(data: string): string;
-    convertLowerCase(string: string): string;
-    breakThaiWords(string: any): string[];
+    tokenize(content: string): string[];
+    filterSymbols(content: string): string;
+    convertLowerCase(content: string): string;
+    breakThaiWords(word: any): string[];
 }
 export default ThaiWordCount;

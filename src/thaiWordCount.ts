@@ -24,11 +24,10 @@ class ThaiWordCount {
 
     readDictionry(words: Array<string> | string) {
         if (!Array.isArray(words)) {
-            words = words.split("\n");
+            words = words.split('\n');
         }
 
-        for (var i in words) {
-            var word = words[i];
+        for (let word of words) {
             if (word.length > 0) {
                 if (word.search(/,/) >= 0) {
                     const compoundWord = word.split(':');
@@ -42,9 +41,8 @@ class ThaiWordCount {
     }
 
     generateWordTree(word: any) {
-        var path = this.wordTree;
-        for (var i in word) {
-            var c = word[i];
+        let path = this.wordTree;
+        for (let c of word) {
             if (!path[c]) {
                 path[c] = {};
             }
@@ -53,10 +51,9 @@ class ThaiWordCount {
     }
 
     queryWordTree(word: any) {
-        var isFound = true;
-        var path = this.wordTree;
-        for (var i in word) {
-            var c = word[i];
+        let isFound = true;
+        let path = this.wordTree;
+        for (let c of word) {
             if (!path[c]) {
                 isFound = false;
                 break;
@@ -66,57 +63,68 @@ class ThaiWordCount {
         return isFound;
     }
 
-    tokenize(string: string) {
-        string = this.filterSymbols(string);
-        string = this.convertLowerCase(string);
+    tokenize(content: string) {
+        content = this.filterSymbols(content);
+        content = this.convertLowerCase(content);
+
+        console.log('handled content 3', content);
     
-        const workingArray = string.split(" ");
-        var resultArray = [];
+        const workingArray = content.split(' ');
+        console.log('workingArray', workingArray);
+        const resultArray = [];
     
-        for (var i in workingArray) {
-            var string = workingArray[i];
-            if (string.search(/[ก-๙]/) >= 0) {
-                var thaiTokens = this.breakThaiWords(string);
-                for (var j in thaiTokens) {
-                    string = thaiTokens[j];
-                    if (string.length > 0) {
-                        resultArray.push(string);
+        for (let str of workingArray) {
+            if (str.search(/[ก-๙]/) >= 0) {
+                const thaiTokens = this.breakThaiWords(str);
+                for (let j in thaiTokens) {
+                    if (thaiTokens.hasOwnProperty(j)) {
+                        str = thaiTokens[j];
+                        if (str.length > 0) {
+                            resultArray.push(str);
+                        }
                     }
                 }
+                // Object.values(thaiTokens).forEach(item => {
+                //     if (item.length > 0) {
+                //         resultArray.push(str);
+                //     }
+                // });
             } else {
-                if (string.length > 0) {
-                    resultArray.push(string);
+                if (str.length > 0) {
+                    resultArray.push(str);
                 }
             }
         }
         return resultArray;
     }
 
-    filterSymbols(data: string) {
-        data = data.replace(/(\n)/g, '');
-        data = data.replace(/[^a-z 0-9 ก-๙]/gi, ' ');
-        return data;
+    filterSymbols(content: string) {
+        content = content.replace(/(\n)/g, '').replace(/[^a-z0-9ก-๙]/gi, ' ');
+        console.log('handled content 1', content);
+        return content;
     }
 
-    convertLowerCase(string: string) {
-        return string.toLowerCase();
+    convertLowerCase(content: string) {
+        content = content.toLowerCase();
+        console.log('handled content 2', content);
+        return content;
     }
 
-    breakThaiWords(string: any) {
-        var words = [];
-        var index = 0;
-        var currentWord = '';
-        var spareWord = '';
-        var badWord = '';
-        var nextWordAble = false;
-        for (var i in string) {
-            var c = string[i];
-            var checkWord = currentWord + c;
+    breakThaiWords(word: any) {
+        let words = [];
+        let index = 0;
+        let currentWord = '';
+        let spareWord = '';
+        let badWord = '';
+        let nextWordAble = false;
+        for (let i = 0; i < word.length; i++) {
+            const c = word[i];
+            const checkWord = currentWord + c;
     
             if (this.queryWordTree(checkWord)) {
                 currentWord = checkWord;
                 if (this.thaiWords[currentWord]) {
-                    if (badWord != '') {
+                    if (badWord !== '') {
                         words[index] = badWord.substring(0, badWord.length - 1);
                         badWord = '';
                         index++;
@@ -124,9 +132,14 @@ class ThaiWordCount {
     
                     if (this.compoundWords[checkWord]) {
                         const brokenWords = this.compoundWords[checkWord]
-                        for (var j in brokenWords) {
-                            words[index++] = brokenWords[j];
+                        for (let j in brokenWords) {
+                            if (brokenWords.hasOwnProperty(j)) {
+                                words[index++] = brokenWords[j];
+                            }
                         }
+                        // Object.values(brokenWords).forEach(item => {
+                        //     words[index++] = item;
+                        // });
                         index--;
                     } else {
                         words[index] = checkWord;
@@ -143,7 +156,7 @@ class ThaiWordCount {
                     spareWord = c;
                     index++;
                 } else {
-                    if (badWord == '') {
+                    if (badWord === '') {
                         badWord = currentWord + c;
                     } else {
                         badWord += c;
@@ -152,7 +165,7 @@ class ThaiWordCount {
                 }
             }
         }
-        if (badWord != '') {
+        if (badWord !== '') {
             words[index] = badWord;
         }
         return words;

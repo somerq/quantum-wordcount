@@ -72,7 +72,10 @@ class WordCounter {
             content = this.filterTag(content);
         }
         if (isLangOf(content, thaiUnicode, thaiContentRatio)) {
-            return TWC.tokenize(content).length;
+            console.log('origin content', content);
+            const tokenized = TWC.tokenize(content);
+            console.log('tokenized array', tokenized);
+            return tokenized.length;
         }
         const wordBuffer = new StringBuffer();
         let clearBuffer = false;

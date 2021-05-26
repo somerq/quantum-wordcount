@@ -1,6 +1,6 @@
 {
   "name": "quantum-wordcount",
-  "version": "1.0.1",
+  "version": "1.0.7",
   "description": "javascript stringbuffer.",
   "main": "dist/index.js",
   "scripts": {
